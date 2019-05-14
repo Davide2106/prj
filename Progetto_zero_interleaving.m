@@ -1,4 +1,3 @@
-CONSEGNA
 % PROGETTO ZERO INTERLEAVING
 %
 % Lo script deve ricostruire una sequenza x_n a partire da una sua versione "zero interleaved" indicata con y_n
@@ -35,7 +34,8 @@ CONSEGNA
 % diverse da quella assegnata (es. diverso numero di campioni).
 % Definire in modo chiaro le variabili utilizzate e commentare sinteticamente i vari passi dello script.
 
-START
+%%START
+
 close all;
 %clear;
 clc;
@@ -50,7 +50,7 @@ M = input('Inserisci M: ');
 f_s = 1/M; %frequenza di campionamento
 %f  = -f_s : 1 : f_s;
 
-ZERO-INTERLEAVING
+%ZERO-INTERLEAVING
 y_n = zeros(M,dim); %crea una matrice di zeri contenente le M sequenze lungo le righe
 Yf_n = y_n; %copia la matrice creata in quella che sarà la trasformata
 for j = 1:M %ciclo per creare sequenze campionate
@@ -61,7 +61,7 @@ for j = 1:M %ciclo per creare sequenze campionate
     end
 end
 
-TRASFORMAZIONI 
+%TRASFORMAZIONI 
 n = (0:dim-1);
 To = dim*M;
 DF = 1/To;
@@ -97,14 +97,15 @@ for k = 1:M
     pause
 end
 
-FILTRO
+%FILTRO
 figure
+%f = -dim/2 : 1 : (dim/2)-1;
 f = linspace(-M,M); %credo sia da rivedere questo intervallo 
 % su cui si basano costruzione e rappresentazione del filtro
-filtro = M*rectangularPulse(-M/2,M/2,f*M);
+filtro = M*rectangularPulse(-M/2,M/2,f); %il grafico 
 % syms fx
 %filtro_t = ifft (filtro);
-filtro_t = ifftshift(abs(ifft(filtro)));
+filtro_t = ifftshift(ifft(filtro));
 subplot (3,1,1)
 stem(f,real(filtro));
 title('Filtro in frequenza')
@@ -124,5 +125,9 @@ end
 %%
 
 %creare filtro rettangolo, tenerlo discreto, fare trasformata discreta.
+
+
+
+
 
 
