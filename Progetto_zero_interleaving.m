@@ -128,6 +128,18 @@ end
 %%
 
 %creare filtro rettangolo, tenerlo discreto, fare trasformata discreta.
+%addare plot dello scarto: differenza campione-campione, fare uno scarto
+%quadratico medio 
+%mergiare il filtro di Fra
+%per M più grande di un certo valore si va in alias, la sequenza si deforma
 ADD ?
 %error('M scelto non rispetta il teorema del campionamento!');
+%addare plot dello scarto: differenza campione-campione, fare uno scarto
+%quadratico medio
+%relazionare sul grafico M con lo scarto quadratico
+%mergiare il filtro di Fra
+%per M più grande di un certo valore si va in alias, la sequenza si deforma
+%il filtro deve eliminare le repliche spettrali: M = numero di repliche
+
+
 
