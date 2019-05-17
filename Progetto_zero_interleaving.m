@@ -69,12 +69,12 @@ subplot(2,1,1)
 stem (n,y);
 xlabel ('Campioni')
 title('Sequenza di Partenza')
-pause
+%pause
 subplot(2,1,2)
 stem (n,real(Xf));
 xlabel ('Frequenza (Hz)')
 title('Trasf seq X')
-pause
+%pause
 for k = 1:M
     titolo = 'Sequenza con primo elemento diverso da 0 in posizione %d';
     pos = k-1; %indice di posizione che viene riportato nel grafico
@@ -92,7 +92,7 @@ for k = 1:M
     stem(n,real(Yf_n(k,:)));
     xlabel ('Frequenza (Hz)')
     title('Sequenza trasformata')
-    pause
+    %pause
 end
 
 %FILTRO
@@ -115,22 +115,30 @@ subplot (2,1,2)
 plot(t,filtro_t);
 grid on;
 title('Filtro nei tempi')
-pause
+%pause
 Zf_n=zeros(M,dim);
 z=zeros(M,(2*dim)-1);
 u=zeros(M,dim);
+%errorequadraticotempo=zeros(M,dim);
+
 for i=1:M
     figure(3)
     Zf_n(i,:)=Yf_n(i,:).*filtro;
     z(i,:) = conv(y_n(i,:),filtro_t);
     u(i,:)=z(i,(dim/2)+1:(3/2)*dim);
-
-            
-        subplot(2,1,1)
-        stem(u(i,:));
-        subplot(2,1,2)
-        stem(real(Zf_n(i,:)));
-        pause
+    errorequadratico=immse(y(1,:),u(i,:));
+    subplot(2,1,1)
+    stem(u(i,:));
+%     subplot(3,1,2)
+%     stem(abs(errorequadraticotempo(i,:)));
+    subplot(2,1,2)
+    stem(real(Zf_n(i,:)));
+    titolo='Errore quadratico medio sequenza %d = %0.6f';
+    disp(sprintf(titolo,i,errorequadratico));
+        
+%         subplot(4,1,4)
+%         stem(errorequadraticofrequenza(i,:));
+        %pause
     %la convoluzione ancora è da controllare,
     %ma almeno la forma c'è; 
     %il picco è un po' più in alto
@@ -139,15 +147,5 @@ for i=1:M
     
     %eliminare i campioni in eccesso
     end
-
-
-
-
-
-%creare filtro rettangolo, tenerlo discreto, fare trasformata discreta.
-%ADD ?
-%error('M scelto non rispetta il teorema del campionamento!');
-
-
 
 
