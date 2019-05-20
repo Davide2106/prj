@@ -63,8 +63,6 @@ end
 
 %TRASFORMAZIONI 
 n = (0:dim-1);
-% To = dim*M;
-% DF = 1/To;
 Xf=fft(y);
 figure
 subplot(2,1,1)
@@ -79,13 +77,9 @@ title('Trasf seq X')
 pause
 for k = 1:M
     titolo = 'Sequenza con primo elemento diverso da 0 in posizione %d';
-    pos = k-1; %indice di posizione che viene riportato nel grafico
-    %Yf_n(k,:) = fft(y_n(k,:));
+    pos = k-1;
     Yf_n(k,:) = fft(y_n(k,:)); 
-    %non ho ancora capito bene come funzioni la fttshift, 
-    %ma se fatta sul valore assoluto della trasformata dà 
-    %graficamente il risultato sperato
-    figure
+    figure(2)
     subplot(2,1,1)
     stem(n,y_n(k,:));
     xlabel ('Campioni')
@@ -99,28 +93,39 @@ end
 
 %FILTRO
 figure
-%f = linspace(-M,M); %credo sia da rivedere questo intervallo 
-% su cui si basano costruzione e rappresentazione del filtro
-%filtro = M*rectangularPulse(-f_s/2,f_s/2,f);
-% syms fx
-%filtro_t = ifft (filtro);
-%filtro_t = ifftshift(ifft(filtro));
-t=-10*M:10*M;
+t=-dim/2:dim/2-1;
 filtro_t=sinc(t/M);
 filtro=abs(fft(filtro_t));
+
+
 subplot (2,1,1)
 stem(filtro);
-%axis([0 3*M 0 M+2]);
 title('Filtro in frequenza')
 subplot (2,1,2)
-plot(t,real(filtro_t));
+plot(t,filtro_t);
 grid on;
 title('Filtro nei tempi')
 pause
+Zf_n=zeros(M,dim);
+z=zeros(M,(2*dim)-1);
+u=zeros(M,dim);
+
 for i=1:M
-    figure
-    %z = Yf_n(i,:).*real(filtro);
-    z = conv(y_n(i,:),filtro_t);
+    figure(3)
+    Zf_n(i,:)=Yf_n(i,:).*filtro;
+    z(i,:) = conv(y_n(i,:),filtro_t);
+    u(i,:)=z(i,(dim/2)+1:(3/2)*dim);
+    
+    subplot(2,1,1)
+    stem(u(i,:));
+    subplot(2,1,2)
+    stem(real(Zf_n(i,:)));
+%     titolo='Errore quadratico medio sequenza %d = %0.6f';
+%     disp(sprintf(titolo,i,errorequadratico));
+        
+%         subplot(4,1,4)
+%         stem(errorequadraticofrequenza(i,:));
+        %pause
     %la convoluzione ancora è da controllare,
     %ma almeno la forma c'è; 
     %il picco è un po' più in alto
@@ -128,15 +133,39 @@ for i=1:M
     %dovrebbe essere 400 anche dopo la convoluzione
     
     %eliminare i campioni in eccesso
-    stem(z);
-    pause
-   
-   
-   
-
-         
 end
 
 
+r_n=zeros(dim);
+%calcolo la matrice contenente tutte le sequenze con primo campione non
+%nullo, al variare di M (che va da 1 a dim)
+%calcolo la matrice contentente le sequenze ricostruite per ogni riga della
+%matrice r_n
+
+for i=1:dim
+
+l=1;
+    while l<dim+1
+    r_n(i,l)=y(l);
+    l=l+i;
+    
+    end
+   rec_sign(i,:) = conv(r_n(i,:),filtro_t);
+     sign(i,:)=rec_sign(i,(dim/2)+1:(3/2)*dim);     
+         
+    
+
+end
+%calcolo errore quadratico medio per tutti gli M
+errorequadratico=zeros(1,dim);
+for i=1:dim
+somma=0;
+for j=1:dim
+somma=somma+(abs(y(j)-sign(i,j))^2);
+end
+errorequadratico(i)=(errorequadratico(i)+somma)/dim;
+
+end
 
 
+% 
